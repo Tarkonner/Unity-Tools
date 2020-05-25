@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,12 +11,11 @@ public class BaseHealthSystemWithInvincibilityFrames : BaseHealthSystem
     
     public override void Damage(int damageTaken)
     {
-        if (canTakeDamage)
-        {
-            canTakeDamage = false;
-            base.Damage(damageTaken);
-            StartCoroutine(InvincibilityFrames());
-        }
+        if (!canTakeDamage) return;
+        
+        canTakeDamage = false;
+        base.Damage(damageTaken);
+        StartCoroutine(InvincibilityFrames());
     }
 
     private IEnumerator InvincibilityFrames()
