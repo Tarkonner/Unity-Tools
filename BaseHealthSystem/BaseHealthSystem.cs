@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseHealthSystem : MonoBehaviour
+public class BaseHealthSystem : MonoBehaviour, ITakeDamage
 {
     [Header("Health")]
     public int maxHealth = 1; 
@@ -48,5 +48,11 @@ public class BaseHealthSystem : MonoBehaviour
     public virtual void Dead()
     {
         Destroy(gameObject);
+    }
+
+    [ContextMenu("TestDamage")]
+    void TakeDamage()
+    {
+        Damage(1);
     }
 }
