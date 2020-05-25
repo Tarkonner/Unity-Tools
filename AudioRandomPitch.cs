@@ -14,11 +14,17 @@ public class AudioRandomPitch : MonoBehaviour
     [Range(0, 1)] [SerializeField] private float minVolume = .9f;
     [Range(0, 1)] [SerializeField] private float maxVolume = 1f;
     
-    void Start()
+    void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
     }
     
+    public void PlaySound()
+    {
+        _audioSource.Stop();
+        RandomPitch();
+        _audioSource.Play();
+    }
 
     void RandomPitch()
     {
