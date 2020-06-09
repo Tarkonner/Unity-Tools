@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GenericObjectPooler <T> : MonoBehaviour where T : Component
+public abstract class GenericObjectPooler <T> : MonoBehaviour where T : Component
 {
     [SerializeField] T prefab;
 
