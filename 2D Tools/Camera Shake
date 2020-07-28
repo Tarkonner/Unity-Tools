@@ -1,0 +1,46 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Cinemachine;
+
+public class CameraShake : MonoBehaviour
+{
+    public static CameraShake Instance { get; private set; }
+    
+    private CinemachineVirtualCamera _virtualCamera;
+    private CinemachineBasicMultiChannelPerlin _channelPerlin;
+
+    private float _shakeTimer;
+    private float _shakeTimerTotal;
+    private float _startingIntensity;
+    
+    
+    private void Awake()
+    {
+        Instance = this;
+        
+        _virtualCamera = GetComponent<CinemachineVirtualCamera>();
+        _channelPerlin = _virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+    }
+
+    public void ShakeCamera(float intensity, float time)
+    {
+        _channelPerlin.m_AmplitudeGain = intensity;
+
+        _shakeTimerTotal = time;
+        _shakeTimer = time;
+        _startingIntensity = intensity;
+    }
+
+    private void Update()
+    {
+        if (_shakeTimer > 0)
+        {
+            _shakeTimer -= Time.deltaTime;
+
+            if (_shakeTimer <= 0f) 
+                _channelPerlin.m_AmplitudeGain = Mathf.Lerp(_startingIntensity, 0, 1 - _shakeTimer / _shakeTimerTotal);
+        }
+    }
+}
