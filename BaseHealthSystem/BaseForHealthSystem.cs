@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseForHealthSystem : MonoBehaviour, ITakeDamage
+public class BaseForHealthSystem : MonoBehaviour, IWeaponInteractive
 {
     public HealthFunction health;
     [SerializeField] private int maxHealth = 3;
