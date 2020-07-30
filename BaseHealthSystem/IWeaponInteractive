@@ -1,0 +1,4 @@
+public interface IWeaponInteractive
+{
+    void Interaction(int power);
+}
