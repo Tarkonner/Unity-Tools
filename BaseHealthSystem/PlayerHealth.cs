@@ -10,7 +10,7 @@ public class PlayerHealth : InvisFarmeHealth
     
     public override void Interaction(int damageTaken)
     {
-        base.Damage(damageTaken);
+        base.Interaction(damageTaken);
         OnDamage?.Invoke();
     }
 }
