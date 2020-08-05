@@ -1,0 +1,50 @@
+using System.Collections;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
+    
+namespace Tests
+{
+    public class InvisFrameHealth
+    {
+        [UnityTest]
+        public IEnumerator HitInInvisFrames()
+        {
+            int damageToGive = 1;
+            
+            GameObject gameObject = new GameObject();
+            gameObject.AddComponent<InvisFarmeHealth>();
+
+            var healthSystem = gameObject.GetComponent<BaseForHealthSystem>();
+            
+            healthSystem.Interaction(damageToGive);
+            
+            Assert.AreEqual(healthSystem.HealthFunction._max - damageToGive, healthSystem.HealthFunction.current);
+            
+            yield return new WaitForSeconds(.1f);
+            
+            healthSystem.Interaction(damageToGive);
+            Assert.AreEqual(healthSystem.HealthFunction._max - damageToGive, healthSystem.HealthFunction.current);
+        }
+        
+        [UnityTest]
+        public IEnumerator HitOutsideInvisFrames()
+        {
+            int damageToGive = 1;
+            
+            GameObject gameObject = new GameObject();
+            gameObject.AddComponent<InvisFarmeHealth>();
+
+            var healthSystem = gameObject.GetComponent<BaseForHealthSystem>();
+            
+            healthSystem.Interaction(damageToGive);
+            
+            Assert.AreEqual(healthSystem.HealthFunction._max - damageToGive, healthSystem.HealthFunction.current);
+            
+            yield return new WaitForSeconds(.3f);
+            
+            healthSystem.Interaction(damageToGive);
+            Assert.AreEqual(healthSystem.HealthFunction._max - damageToGive * 2, healthSystem.HealthFunction.current);
+        }
+    }
+}
