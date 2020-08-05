@@ -1,0 +1,33 @@
+using System.Collections;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
+
+namespace Tests
+{
+    public class PlayerHealthTest
+    {
+        [UnityTest]
+        public IEnumerator DamageAndEvent()
+        {
+            int damage = 1;
+            bool called = false;
+
+            void GetCall() => called = true;
+
+
+            GameObject gameObject = new GameObject();
+            gameObject.AddComponent<PlayerHealth>();
+            var playerHealth = gameObject.GetComponent<PlayerHealth>();
+
+            PlayerHealth.OnDamage += GetCall;
+            
+            playerHealth.Interaction(damage);
+
+            Assert.AreEqual(playerHealth.HealthFunction._max - damage, playerHealth.HealthFunction.current);
+            Assert.AreEqual(true, called);
+            
+            yield return null;
+        }
+    }
+}
