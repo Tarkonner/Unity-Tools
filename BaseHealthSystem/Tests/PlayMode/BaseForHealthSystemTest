@@ -1,0 +1,44 @@
+using System.Collections;
+using NUnit.Framework;
+using UnityEngine;
+using UnityEngine.TestTools;
+
+namespace Tests
+{
+    public class BaseForHealthSystemTest
+    {
+        [UnityTest]
+        public IEnumerator TestDamage()
+        {
+            int damageToGive = 1;
+            
+            GameObject gameObject = new GameObject();
+            gameObject.AddComponent<BaseForHealthSystem>();
+
+            var healthSystem = gameObject.GetComponent<BaseForHealthSystem>();
+            
+            healthSystem.Interaction(damageToGive);
+            
+            Assert.AreEqual(healthSystem.HealthFunction._max - damageToGive, healthSystem.HealthFunction.current);
+            
+            yield return null;
+        }
+        
+        [UnityTest]
+        public IEnumerator TestDead()
+        {
+            GameObject gameObject = new GameObject();
+            gameObject.AddComponent<BaseForHealthSystem>();
+
+            var healthSystem = gameObject.GetComponent<BaseForHealthSystem>();
+            
+            int damageToGive = healthSystem.HealthFunction._max;
+            
+            healthSystem.Interaction(damageToGive);
+            
+            Assert.AreEqual(false, healthSystem.HealthFunction.living);
+            
+            yield return null;
+        }
+    }
+}
