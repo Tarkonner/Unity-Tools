@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InvisFarmeHealth : BaseForHealthSystem
+public class InvisFrameHealth : BaseForHealthSystem
 {
     [SerializeField] private float invulnerabilityFrames = .2f;
     private bool _isInvulnerable;
