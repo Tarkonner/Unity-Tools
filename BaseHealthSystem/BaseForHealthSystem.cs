@@ -1,33 +1,25 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class BaseForHealthSystem : MonoBehaviour, IWeaponInteractive
+public partial class BaseForHealthSystem : MonoBehaviour, IWeaponInteractive
 {
-    public HealthFunction health;
-    [SerializeField] private int maxHealth = 3;
+    public HealthFunction HealthFunction { get; private set; }
+    [SerializeField] private int setMaxHealth = 3;
     
-    private void Awake()
-    {
-       health = new HealthFunction(maxHealth);
-    }
+    private void Awake() => HealthFunction = new HealthFunction(setMaxHealth);
+    private void OnEnable() => HealthFunction.FullHeal();
 
-    private void OnEnable()
-    {
-        health.FullHeal();
-    }
-
+    
     protected virtual void Dead()
     {
+        Debug.Log($"{gameObject.name} is dead." );
         gameObject.SetActive(false);
     }
 
     public virtual void Interaction(int damage) //Damage
     {
-        health.TakingDamage(damage);
+        HealthFunction.TakingDamage(damage);
         
-        if(!health.living)
+        if(!HealthFunction.living)
             Dead();
     }
 }
