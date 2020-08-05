@@ -1,15 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
 public class TextHealthbar : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI textForMaxHealth, textForMinHealth;
-
+    [SerializeField] private TextMeshProUGUI textForMaxHealth;
+    [SerializeField] private TextMeshProUGUI textForMinHealth;
+    
     private GameObject _player;
-    private BaseHealthSystem _playerHealthSystem;
+    private BaseForHealthSystem _playerHealthSystem;
     private bool _playerIsActive = false;
 
     private int _savedHealth;
@@ -31,7 +29,7 @@ public class TextHealthbar : MonoBehaviour
         if (_player != null)
         {
             _playerIsActive = true;
-            _playerHealthSystem = _player.GetComponent<BaseHealthSystem>();
+            _playerHealthSystem = _player.GetComponent<BaseForHealthSystem>();
         }
         else
         {
@@ -47,13 +45,13 @@ public class TextHealthbar : MonoBehaviour
     
     void ShowCurrentHealth()
     {
-        _savedHealth = _playerHealthSystem.currentHealth;
+        _savedHealth = _playerHealthSystem.HealthFunction.current;
         textForMinHealth.text = _savedHealth.ToString();
     }
     
     void ShowMaxHealth()
     {
-        string showText = _playerHealthSystem.maxHealth.ToString() + " /";
+        string showText = _playerHealthSystem.HealthFunction._max + " /";
         textForMaxHealth.text = showText;
     }
 }
