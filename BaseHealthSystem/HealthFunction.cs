@@ -1,13 +1,20 @@
 ﻿public class HealthFunction 
 {
-    private int _max;
-    public int current;
-    public bool living;
+        private int _max;
+    public int current { get; private set; }
+    public bool living { get; private set; }
     
     //Constructor
     public HealthFunction(int maxHealth)
     {
         _max = maxHealth;
+    }
+    
+    
+    //Set Health
+    public void SetHealth(int healthAmount)
+    {
+        current = healthAmount;
     }
     
     //Healing
