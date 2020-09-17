@@ -1,0 +1,121 @@
+using UnityEngine;
+
+[RequireComponent(typeof(Rigidbody2D))]
+public class AllDirectionsPlayerMovement : MonoBehaviour
+{
+    //Components
+    private Rigidbody2D _rb;
+    
+    //Movement
+    private Vector2 _rawPlayerInput;
+    [SerializeField] private Vector2 _playersInput;
+    private Vector2 _moveInput;
+    private const float Speed = 32;
+    private const float MulToTopSpeed = 8f;
+    private const float MulToStop = 16f; 
+    private float _topVelocity;
+    private float _modefier;
+    //To Normal speed
+    private bool _toNormalSpeed = false;
+    private float _normalSpeedTimer = 0;
+    [HideInInspector] public bool speedBoost = false;
+    private Vector2 _topSpeed;
+    
+    //Test charge
+    private const float ChargeTime = .5f;
+    private float _chaTimer;
+
+    //If player is dead
+    public bool alive = true;
+    private float _toDeadStopTimer = 0;
+    
+    private void Awake() => _rb = GetComponent<Rigidbody2D>();
+
+    
+    void Update()
+    {
+        if (alive)
+        {
+            if (_toDeadStopTimer > 0)
+                _toDeadStopTimer = 0;
+            
+            _playersInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
+            _rawPlayerInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        
+            _moveInput = _playersInput.magnitude < 1 ? _playersInput : _playersInput.normalized; //Make sure input >= 1
+
+            //Charge to test max movement
+            if (Input.GetKeyDown(KeyCode.Space))
+                _chaTimer = ChargeTime;
+        }
+        else
+        {
+            _rawPlayerInput = Vector2.zero;
+            _toDeadStopTimer += Time.deltaTime;
+            _playersInput = Vector2.Lerp(_playersInput, Vector2.zero, _toDeadStopTimer);
+        }
+        
+        //Charge timer
+        if (_chaTimer > 0)
+            _chaTimer -= Time.deltaTime;
+
+        speedBoost = _chaTimer > 0;
+    }
+
+    
+    private void FixedUpdate()
+    {
+        if (_rawPlayerInput.magnitude > 0)
+        {    //From stop to top speed
+            _modefier = Mathf.Min(Mathf.Pow(_moveInput.magnitude, 2) * MulToTopSpeed, 1);
+        }
+        else
+        {    //From high speed to stop
+            _modefier = Mathf.Max(DownParabel(_moveInput.magnitude), 0);
+        }
+
+        Vector2 velocityForce = _playersInput.normalized * (_modefier * (Speed * Time.deltaTime)); //Normal movement
+        _topVelocity = (Speed * Time.deltaTime / _rb.drag - Time.fixedDeltaTime * 
+            (Speed * Time.deltaTime)) / _rb.mass / 2 / 10; //Normal top velocity
+
+        
+        if (_rb.velocity.magnitude > _topVelocity + .01f && !speedBoost) //If we are not boosting, get movement, and begin to slow down
+        {
+            _topSpeed = _rb.velocity;
+            _normalSpeedTimer = 1;
+            _toNormalSpeed = true;
+        }
+
+        if (_toNormalSpeed)
+        {    //From over normal speed to normal
+            _normalSpeedTimer -= Time.deltaTime;
+            float mod = DownParabel(_normalSpeedTimer);
+            
+            var fastSpeed = _playersInput.normalized * (mod * (_topSpeed.magnitude * Time.deltaTime));
+            
+            _rb.velocity = fastSpeed.magnitude > velocityForce.magnitude ? fastSpeed : velocityForce;
+            
+            if(fastSpeed.magnitude <= velocityForce.magnitude)
+                _toNormalSpeed = false;
+        }
+        else
+        {
+            //Test
+            if (speedBoost)
+            {    //Test speed boost
+                _rb.velocity = velocityForce * 3f;
+            }
+            else
+            {    //Normal movement
+                _rb.velocity = velocityForce;
+            }
+        }
+    }
+
+    private float DownParabel(float x) //The parabel use to slowdown
+    {    //Make to go through (1,1)
+        return -Mathf.Pow(x, 2) * MulToStop + //A
+                        (MulToStop*2) * x //B
+                        - (MulToStop -1); 
+    }
+}
