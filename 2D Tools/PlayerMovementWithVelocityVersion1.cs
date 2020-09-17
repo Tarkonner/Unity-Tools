@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class PlayerMovementWithVelocity : MonoBehaviour
+public class PlayerMovementWithVelocityVersion1 : MonoBehaviour
 {
     public bool stopInputs = false;
     
