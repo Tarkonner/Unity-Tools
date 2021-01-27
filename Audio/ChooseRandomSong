@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Audio;
 using Random = UnityEngine.Random;
 
 public class ChooseRandomSong : MonoBehaviour
@@ -11,8 +10,7 @@ public class ChooseRandomSong : MonoBehaviour
     
     [SerializeField] private AudioClip[] songs;
     private AudioClip[] _randomSongs;
-    private int songPlaying = 0;
-
+    private int _songPlaying = 0;
     
     
     void Start()
@@ -20,11 +18,28 @@ public class ChooseRandomSong : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
         
         _randomSongs = new AudioClip[songs.Length];
-        
-        for (int i = 0; i < songs.Length; i++)
+
+        RandomSongArray();
+        PlayMusic();
+    }
+
+    private void Update()
+    {
+        if(!_audioSource.isPlaying)
+            PlayMusic();
+    }
+
+    void RandomSongArray()
+    {
+        for (int i = 0; i < _randomSongs.Length; i++)
+        {
+            _randomSongs[i] = null;
+        }
+
+        foreach (var t in songs)
         {
             bool foundPlace = false;
-            AudioClip targetSong = songs[i];
+            AudioClip targetSong = t;
 
             while (!foundPlace)
             {
@@ -37,20 +52,16 @@ public class ChooseRandomSong : MonoBehaviour
                 }
             }
         }
-        
-        PlayMusic();
     }
-
-    private void Update()
-    {
-        if(!_audioSource.isPlaying)
-            PlayMusic();
-    }
-
+    
     void PlayMusic()
     {
-        _audioSource.clip = _randomSongs[songPlaying];
+        _audioSource.clip = _randomSongs[_songPlaying];
         _audioSource.Play();
-        songPlaying++;
+        _songPlaying++;
+
+        if (_songPlaying < _randomSongs.Length) return;
+        _songPlaying = 0;
+        RandomSongArray();
     }
 }
