@@ -1,0 +1,10 @@
+using System;
+using UnityEngine;
+
+[Serializable]
+public class LootData
+{
+    public GameObject item;
+    public int dropChance;
+    public int overallDropChance;
+}
