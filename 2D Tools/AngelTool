@@ -1,0 +1,37 @@
+public class AngelTool
+{
+    public static float Angel2D(Vector3 from, Vector3 to)
+    {
+        const int getDegreeFromUp = 90; //This is to make so the degree i get out works in Unity 2D z axis.
+        float calculation = 0;
+
+        Vector2 test = (to - from).normalized;
+
+        if (from == Vector3.zero && to == Vector3.zero || Vector3.Distance(to, from) < 0.05f)
+        {
+            return 0;
+        }
+        
+        bool positiveX = test.x > 0;
+            
+        calculation = positiveX ? 
+            Mathf.Asin(test.y) * Mathf.Rad2Deg - getDegreeFromUp : 
+            getDegreeFromUp - Mathf.Asin(test.y)*Mathf.Rad2Deg;
+
+        return calculation;
+    }
+
+    public static void LookAtTarget2D(GameObject owner, GameObject target)
+    {
+        float degree = Angel2D(owner.transform.position, target.transform.position);
+        Vector3 ownRotation = owner.transform.eulerAngles;
+        owner.transform.eulerAngles = new Vector3(ownRotation.x, ownRotation.y, degree);
+    }
+    
+    public static void LookAtTarget2D(GameObject owner, Vector2 target)
+    {
+        float degree = Angel2D(owner.transform.position, target);
+        Vector3 ownRotation = owner.transform.eulerAngles;
+        owner.transform.eulerAngles = new Vector3(ownRotation.x, ownRotation.y, degree);
+    }
+}
